@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#100b18">
+<title>VYBORA</title>
+<style>
+body {
+  margin: 0;
+  background: #100b18;
+  color: white;
+  font-family: Arial, sans-serif;
+  text-align: center;
+}
+header {
+  padding: 22px;
+  color: #e879f9;
+  font-size: 28px;
+  font-weight: bold;
+}
+main {
+  padding: 24px;
+}
+h1 { font-size: 38px; }
+span { color: #e879f9; }
+button {
+  background: #a855f7;
+  color: white;
+  border: 0;
+  padding: 13px 20px;
+  border-radius: 12px;
+  margin: 6px;
+  font-weight: bold;
+}
+.card {
+  background: #21162b;
+  border: 1px solid #412b52;
+  border-radius: 16px;
+  padding: 18px;
+  margin: 15px auto;
+  max-width: 420px;
+}
+textarea {
+  width: 95%;
+  min-height: 70px;
+  background: #100b18;
+  color: white;
+  border: 1px solid #a855f7;
+  border-radius: 10px;
+}
+</style>
+</head>
+<body>
+<header>♛ VYBORA</header>
+<main>
+  <h1>Ton univers.<br><span>Tes vibes.</span></h1>
+  <p>Bienvenue dans ta nouvelle communauté.</p>
+  <button onclick="document.getElementById('fil').scrollIntoView()">Explorer</button>
+  <button onclick="alert('Les Lives arrivent bientôt !')">Voir les Lives</button>
+  <section class="card" id="fil">
+    <h2>Le fil VYBORA</h2>
+    <textarea id="message" placeholder="Quoi de neuf ?"></textarea>
+    <p><button onclick="publier()">Publier</button></p>
+    <div id="publications"></div>
+  </section>
+  <section class="card">
+    <h2>👑 Mon profil</h2>
+    <p>Membre VYBORA · Niveau 1</p>
+  </section>
+  <section class="card">
+    <h2>🪙 Portefeuille</h2>
+    <p>100 pièces de démonstration</p>
+    <small>Les pièces n'ont aucune valeur monétaire réelle.</small>
+  </section>
+</main>
+<script>
+function publier() {
+  const champ = document.getElementById('message');
+  const texte = champ.value.trim();
+  if (!texte) return;
+  const publication = document.createElement('p');
+  publication.textContent = texte;
+  publication.className = 'card';
+  document.getElementById('publications').prepend(publication);
+  champ.value = '';
+}
+</script>
+</body>
+</html>
