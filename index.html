@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+I<!DOCTYPE html>
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
@@ -86,5 +86,32 @@ function publier() {
   champ.value = '';
 }
 </script>
+
+<section id="vybora-live" style="background:#100b1d;color:white;padding:20px;border-radius:18px;margin:20px 0;font-family:Arial,sans-serif">
+  <h2 style="color:#c084fc;text-align:center">👑 VYBORA LIVE</h2>
+  <p style="text-align:center">Ta salle, tes vibes 💜</p>
+  <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px" id="vybora-seats"></div>
+  <p id="vybora-status" style="text-align:center">Bienvenue dans la salle !</p>
+  <button onclick="document.getElementById('vybora-status').textContent='🙋 Demande de siège envoyée !'" style="width:100%;padding:12px;margin:5px 0;background:#7c3aed;color:white;border:0;border-radius:10px">🙋 Demander un siège</button>
+  <h3>🎁 Envoyer un cadeau</h3>
+  <div style="display:flex;gap:8px;flex-wrap:wrap">
+    <button onclick="vyboraGift('🌹 Rose')" style="padding:10px;background:#322044;color:white;border:1px solid #a855f7;border-radius:10px">🌹 Rose</button>
+    <button onclick="vyboraGift('❤️ Cœur')" style="padding:10px;background:#322044;color:white;border:1px solid #a855f7;border-radius:10px">❤️ Cœur</button>
+    <button onclick="vyboraGift('👑 Couronne')" style="padding:10px;background:#322044;color:white;border:1px solid #a855f7;border-radius:10px">👑 Couronne</button>
+  </div>
+</section>
+<script>
+const seatBox = document.getElementById('vybora-seats');
+for (let i = 1; i <= 9; i++) {
+  const seat = document.createElement('div');
+  seat.style.cssText = 'background:#241532;border:1px solid #8b5cf6;border-radius:12px;padding:18px 2px;text-align:center';
+  seat.innerHTML = '🪑<br>Siège ' + i + '<br><small>Libre</small>';
+  seatBox.appendChild(seat);
+}
+function vyboraGift(gift) {
+  document.getElementById('vybora-status').textContent = 'Tu as choisi : ' + gift + ' 💜';
+}
+</script>
+
 </body>
 </html>
