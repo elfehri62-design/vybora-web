@@ -1,4 +1,4 @@
-
+UI
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -332,6 +332,140 @@ renderSeats();
 renderGifts();
 updateWallet();
 </script>
+ 
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut,
+  onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDpxeHDO6p5KaEVHYGc6rv56ehL118O8BE",
+  authDomain: "vybora-723c6.firebaseapp.com",
+  projectId: "vybora-723c6",
+  storageBucket: "vybora-723c6.firebasestorage.app",
+  messagingSenderId: "495068887524",
+  appId: "1:495068887524:web:40689a89078fb1c6c7aff1"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+
+window.registerAccount = async function() {
+  const email = document.getElementById("authEmail").value.trim();
+  const password = document.getElementById("authPassword").value;
+
+  try {
+    await createUserWithEmailAndPassword(auth, email, password);
+    pipiu("Ton compte VYBORA est créé ! 💜");
+  } catch (error) {
+    pipiu("Erreur : " + error.message);
+  }
+};
+
+window.loginAccount = async function() {
+  const email = document.getElementById("authEmail").value.trim();
+  const password = document.getElementById("authPassword").value;
+
+  try {
+    await signInWithEmailAndPassword(auth, email, password);
+    pipiu("Bienvenue sur VYBORA !");
+  } catch (error) {
+    pipiu("Erreur : " + error.message);
+  }
+};
+
+window.logoutAccount = async function() {
+  try {
+    await signOut(auth);
+    pipiu("Tu es déconnecté.");
+  } catch (error) {
+    pipiu("Erreur de déconnexion.");
+  }
+};
+
+onAuthStateChanged(auth, user => {
+  const status = document.getElementById("authStatus");
+
+  if (user) {
+    status.textContent = "Connecté : " + user.email;
+  } else {
+    status.textContent = "Tu n'es pas encore connecté.";
+  }
+});
+</script>
+ 
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut,
+  onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDpxeHDO6p5KaEVHYGc6rv56ehL118O8BE",
+  authDomain: "vybora-723c6.firebaseapp.com",
+  projectId: "vybora-723c6",
+  storageBucket: "vybora-723c6.firebasestorage.app",
+  messagingSenderId: "495068887524",
+  appId: "1:495068887524:web:40689a89078fb1c6c7aff1"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+
+window.registerAccount = async function() {
+  const email = document.getElementById("authEmail").value.trim();
+  const password = document.getElementById("authPassword").value;
+
+  try {
+    await createUserWithEmailAndPassword(auth, email, password);
+    pipiu("Ton compte VYBORA est créé ! 💜");
+  } catch (error) {
+    pipiu("Erreur : " + error.message);
+  }
+};
+
+window.loginAccount = async function() {
+  const email = document.getElementById("authEmail").value.trim();
+  const password = document.getElementById("authPassword").value;
+
+  try {
+    await signInWithEmailAndPassword(auth, email, password);
+    pipiu("Bienvenue sur VYBORA !");
+  } catch (error) {
+    pipiu("Erreur : " + error.message);
+  }
+};
+
+window.logoutAccount = async function() {
+  try {
+    await signOut(auth);
+    pipiu("Tu es déconnecté.");
+  } catch (error) {
+    pipiu("Erreur de déconnexion.");
+  }
+};
+
+onAuthStateChanged(auth, user => {
+  const status = document.getElementById("authStatus");
+
+  if (user) {
+    status.textContent = "Connecté : " + user.email;
+  } else {
+    status.textContent = "Tu n'es pas encore connecté.";
+  }
+});
+</script>
+
+
 </body>
 </html>
 
