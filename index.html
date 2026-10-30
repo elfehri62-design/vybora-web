@@ -130,6 +130,14 @@ input,textarea,select{width:100%;padding:12px;margin:6px 0;background:#100b18;co
 <section class="page" id="profile">
 <h1>👤 Mon profil</h1>
 <div class="card">
+<h2>💜 Connexion à VYBORA</h2>
+<p id="authStatus">Tu n'es pas encore connecté.</p>
+<input id="authEmail" type="email" placeholder="Ton adresse e-mail">
+<input id="authPassword" type="password" placeholder="Ton mot de passe">
+<button onclick="registerAccount()">Créer mon compte</button>
+<button onclick="loginAccount()">Me connecter</button>
+<button onclick="logoutAccount()">Me déconnecter</button>
+</div><div class="card">
 <div style="font-size:55px">🧑‍🎤</div>
 <input id="profileName" placeholder="Ton pseudo">
 <textarea placeholder="Présente-toi à la communauté"></textarea>
