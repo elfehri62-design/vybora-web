@@ -1,608 +1,337 @@
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#100b18">
+<meta name="theme-color" content="#090512">
 <title>VYBORA 👑</title>
-
 <style>
 *{box-sizing:border-box}
-body{
-  margin:0;
-  background:#100b18;
-  color:white;
-  font-family:Arial,sans-serif;
-  text-align:center
-}
-header{
-  padding:16px;
-  color:#e879f9;
-  font-size:29px;
-  font-weight:bold;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  gap:10px
-}
-.pipiu-logo{
-  width:48px;
-  height:48px;
-  filter:drop-shadow(0 0 9px #38aaff)
-}
-main{max-width:850px;margin:auto;padding:15px}
-h1,h2{color:#d8a2ff}
-.card{
-  background:#21162b;
-  border:1px solid #56336d;
-  border-radius:16px;
-  padding:18px;
-  margin:15px 0
-}
-button,input,select{
-  font-size:15px;
-  border-radius:10px;
-  padding:12px;
-  margin:5px
-}
-button{
-  background:#9333ea;
-  color:white;
-  border:0;
-  font-weight:bold
-}
-button:disabled{opacity:.45}
-input,select{
-  background:#100b18;
-  color:white;
-  border:1px solid #a855f7;
-  width:95%
-}
-#seats{
-  display:grid;
-  grid-template-columns:repeat(3,minmax(0,1fr));
-  gap:9px
-}
-.seat{
-  background:#30203e;
-  border:1px solid #8b5cf6;
-  border-radius:12px;
-  padding:10px;
-  min-height:90px;
-  overflow:hidden
-}
-.seat video{width:100%;border-radius:8px}
-.seat small{
-  display:block;
-  color:#d8b4fe;
-  margin-top:5px
-}
-#status{color:#e9b8ff}
-
-#pipiu-notice{
-  position:fixed;
-  left:50%;
-  bottom:18px;
-  transform:translate(-50%,24px);
-  opacity:0;
-  pointer-events:none;
-  display:flex;
-  align-items:center;
-  gap:11px;
-  padding:10px 16px;
-  border:1px solid #8b5cf6;
-  border-radius:18px;
-  background:#211438;
-  box-shadow:0 0 24px #7135d8;
-  transition:opacity .3s,transform .3s;
-  z-index:9999;
-  width:max-content;
-  max-width:calc(100vw - 24px);
-  text-align:left
-}
-#pipiu-notice.show{
-  opacity:1;
-  transform:translate(-50%,0)
-}
-#pipiu-notice svg{
-  width:52px;
-  height:52px;
-  flex:none;
-  animation:pipiu-bounce .65s ease-in-out 2
-}
-#pipiu-notice strong{
-  display:block;
-  color:#8bd7ff
-}
-#pipiu-notice small{color:#e9d5ff}
-
-@keyframes pipiu-bounce{
-  0%,100%{transform:translateY(0)}
-  40%{transform:translateY(-10px) rotate(-6deg)}
-  70%{transform:translateY(0) rotate(5deg)}
-}
-
-@media(prefers-reduced-motion:reduce){
-  #pipiu-notice,#pipiu-notice svg{
-    transition:none;
-    animation:none
-  }
-}
+body{margin:0;background:#090512;color:white;font-family:Arial,sans-serif}
+header{padding:15px;text-align:center;background:#150b24;color:#d879ff;font-size:27px;font-weight:bold}
+nav{display:flex;gap:7px;overflow-x:auto;padding:12px;background:#150b24}
+button{border:0;border-radius:10px;padding:11px;background:#8735dc;color:white;font-weight:bold;cursor:pointer}
+nav button{white-space:nowrap}
+main{max-width:850px;margin:auto;padding:12px}
+.page{display:none}
+.page.active{display:block}
+.card{background:#20142e;border:1px solid #694090;border-radius:16px;padding:16px;margin:12px 0}
+h1,h2{color:#dda5ff}
+input,textarea,select{width:100%;padding:12px;margin:6px 0;background:#100b18;color:white;border:1px solid #8d55b7;border-radius:10px}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}
+.gift{text-align:center;background:#30203e;border-radius:12px;padding:10px}
+.emoji{font-size:30px}
+.seats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.seat{padding:15px 4px;text-align:center;border:1px solid #9b65d5;border-radius:12px;background:#30203e}
+.small{color:#cdb8df;font-size:12px}
+#pipiu{position:fixed;bottom:15px;left:50%;transform:translate(-50%,150%);background:#26133d;border:1px solid #55bfff;border-radius:18px;padding:12px;display:flex;align-items:center;gap:10px;transition:.3s;z-index:10;width:max-content;max-width:95%}
+#pipiu.show{transform:translate(-50%,0)}
+#pipiu .face{font-size:42px;animation:jump .6s 2}
+@keyframes jump{50%{transform:translateY(-10px)}}
 </style>
 </head>
-
 <body>
 
-<header>
-<svg class="pipiu-logo" viewBox="0 0 100 100"
-role="img" aria-label="PIPIU, mascotte VYBORA">
+<header>💙 ♛ VYBORA ♛</header>
 
-<path d="M20 39 13 13 39 29M80 39 87 13 61 29"
-fill="#3b82f6" stroke="#a5dcff" stroke-width="4"
-stroke-linejoin="round"/>
-
-<path d="M27 28 39 8 50 23 62 8 74 29"
-fill="none" stroke="#f5c84c" stroke-width="6"
-stroke-linecap="round" stroke-linejoin="round"/>
-
-<circle cx="50" cy="57" r="34"
-fill="#60c7ff" stroke="#2563eb" stroke-width="4"/>
-
-<path d="M25 47Q32 35 40 47M60 47Q68 35 76 47"
-fill="none" stroke="#e0f7ff" stroke-width="7"
-stroke-linecap="round"/>
-
-<ellipse cx="38" cy="57" rx="5" ry="8" fill="#111b55"/>
-<ellipse cx="63" cy="57" rx="5" ry="8" fill="#111b55"/>
-
-<path d="M45 69Q50 75 55 69"
-fill="none" stroke="#111b55" stroke-width="3"
-stroke-linecap="round"/>
-
-</svg>
-
-<span>VYBORA</span>
-</header>
+<nav>
+<button onclick="openPage('home')">Accueil</button>
+<button onclick="openPage('live')">🔴 LIVE</button>
+<button onclick="openPage('gifts')">🎁 Cadeaux</button>
+<button onclick="openPage('messages')">💌 Messages</button>
+<button onclick="openPage('games')">🎲 Jeux</button>
+<button onclick="openPage('profile')">Profil</button>
+<button onclick="openPage('vip')">VIP</button>
+<button onclick="openPage('wallet')">Portefeuille</button>
+<button onclick="openPage('ranking')">Classements</button>
+<button onclick="openPage('safety')">Sécurité</button>
+</nav>
 
 <main>
 
-<h1>Ton univers. Tes vibes.</h1>
-<p>Bienvenue dans ta communauté 💜</p>
+<section class="page active" id="home">
+<div class="card">
+<h1>Ton univers. Tes vibes. 💜</h1>
+<p>Bienvenue dans VYBORA !</p>
+<p>🐾 PIPIU te souhaite la bienvenue !</p>
+</div>
+<div class="card">
+<h2>Quoi de neuf ?</h2>
+<textarea id="post" placeholder="Écris une publication..."></textarea>
+<button onclick="publish()">Publier</button>
+<div id="feed"></div>
+</div>
+<div class="card">
+<h2>Découvre VYBORA</h2>
+<p>Réseau social · LIVE · Cadeaux · Jeux · Messagerie</p>
+</div>
+</section>
 
-<section class="card">
-<h2>👑 VYBORA LIVE</h2>
-
-<input id="username" placeholder="Ton pseudo" autocomplete="nickname">
-<input id="roomName" placeholder="Nom du salon">
-
-<select id="capacity">
+<section class="page" id="live">
+<h1>👑 VYBORA LIVE</h1>
+<div class="card">
+<input id="pseudo" placeholder="Ton pseudo">
+<input id="room" placeholder="Nom du salon">
+<select id="capacity" onchange="renderSeats()">
 <option value="5">5 sièges</option>
 <option value="9" selected>9 sièges</option>
 <option value="20">20 sièges</option>
 <option value="30">30 sièges</option>
 <option value="50">50 sièges</option>
 </select>
-
-<button id="join">Entrer dans le LIVE</button>
-<button id="leave" disabled>Quitter le LIVE</button>
-
-<p id="status">Bienvenue dans VYBORA 💜</p>
+<button onclick="joinPreview()">Entrer dans le LIVE</button>
+<p id="liveStatus">Bienvenue dans les salons VYBORA.</p>
+</div>
+<div class="card">
+<h2>Les sièges</h2>
+<div class="seats" id="seats"></div>
+</div>
+<div class="card">
+<h2>🎙️ Audio et vidéo</h2>
+<button onclick="pipiu('Le micro sera activé avec la connexion LIVE.')">Micro</button>
+<button onclick="pipiu('La caméra sera activée avec la connexion LIVE.')">Caméra</button>
+</div>
 </section>
 
-<section class="card">
-<h2>🎥 Les participants</h2>
-<p id="count">0 participant</p>
-
-<div id="seats"></div>
-
-<button id="audio" disabled>🎙️ Activer le micro</button>
-<button id="video" disabled>📷 Activer la caméra</button>
+<section class="page" id="gifts">
+<h1>🎁 Boutique VYBORA</h1>
+<div class="card">
+<p>🪙 Solde : <b id="giftBalance">1250</b> points</p>
+<div id="categories"></div>
+<div class="grid" id="giftGrid"></div>
+</div>
 </section>
 
-<section class="card">
-<h2>🎁 Cadeaux VYBORA</h2>
-<p>La boutique des cadeaux arrive bientôt.</p>
-<p>🌹 Rose · ❤️ Cœur · 👑 Couronne</p>
-<p id="giftStatus">
-Les cadeaux seront connectés au portefeuille.
-</p>
+<section class="page" id="messages">
+<h1>💌 Messagerie</h1>
+<div class="card">
+<input id="recipient" placeholder="Destinataire">
+<textarea id="message" placeholder="Ton message..."></textarea>
+<button onclick="sendMessage()">Envoyer</button>
+<div id="messageList"></div>
+</div>
 </section>
 
-<section class="card">
-<h2>🪙 Mon portefeuille</h2>
-<p>Points : à connecter</p>
-<p>Queens : à connecter</p>
+<section class="page" id="games">
+<h1>🎲 Jeux VYBORA</h1>
+<div class="card">
+<h2>🎲 Ludo</h2>
+<p>Un espace de jeu pour la communauté.</p>
+<button onclick="pipiu('PIPIU veut jouer au Ludo !')">Jouer bientôt</button>
+</div>
+<div class="card">
+<h2>🎁 Coffres chanceux</h2>
+<p>Récompenses de présence à découvrir.</p>
+<button onclick="pipiu('Les coffres seront activés après connexion sécurisée.')">Découvrir les coffres</button>
+</div>
 </section>
 
-<section class="card">
-<h2>💌 Tester PIPIU</h2>
+<section class="page" id="profile">
+<h1>👤 Mon profil</h1>
+<div class="card">
+<div style="font-size:55px">🧑‍🎤</div>
+<input id="profileName" placeholder="Ton pseudo">
+<textarea placeholder="Présente-toi à la communauté"></textarea>
+<button onclick="pipiu('Profil enregistré dans cette démonstration.')">Enregistrer</button>
+</div>
+</section>
 
-<p>
-Cette commande teste l'animation.
-Elle ne simule pas encore la réception réelle d'un message.
-</p>
+<section class="page" id="vip">
+<h1>👑 VIP et agences</h1>
+<div class="card">
+<h2>⭐ Espace VIP</h2>
+<p>Badges, avantages et cadeaux exclusifs.</p>
+<button onclick="pipiu('Espace VIP bientôt disponible.')">Découvrir VIP</button>
+</div>
+<div class="card">
+<h2>🏢 Agences</h2>
+<p>Gestion des animateurs et des salons.</p>
+<button onclick="pipiu('Espace agences bientôt disponible.')">Découvrir les agences</button>
+</div>
+</section>
 
-<button type="button" id="test-pipiu">
-Tester « Nouveau message »
-</button>
+<section class="page" id="wallet">
+<h1>👛 Mon portefeuille</h1>
+<div class="card">
+<h2>🪙 Points : <span id="points">1250</span></h2>
+<h2>👑 Queens : <span id="queens">0</span></h2>
+<p class="small">Soldes de démonstration, sans valeur monétaire réelle.</p>
+<h3>Historique</h3>
+<div id="history">Aucune transaction.</div>
+</div>
+</section>
+
+<section class="page" id="ranking">
+<h1>🏆 Classements</h1>
+<div class="card">
+<button onclick="ranking('Journalier')">Journalier</button>
+<button onclick="ranking('Hebdomadaire')">Hebdomadaire</button>
+<button onclick="ranking('Général')">Général</button>
+<p id="rankingText">Classements VYBORA.</p>
+</div>
+</section>
+
+<section class="page" id="safety">
+<h1>🛡️ Sécurité</h1>
+<div class="card">
+<h2>Nos règles</h2>
+<p>Respect, bienveillance et sécurité pour tous.</p>
+<p>Pas de harcèlement, de fraude ou de spam.</p>
+<textarea id="report" placeholder="Décrire un problème"></textarea>
+<button onclick="pipiu('Signalement à connecter au système de modération.')">Signaler</button>
+</div>
 </section>
 
 </main>
 
-<div id="pipiu-notice" role="status" aria-live="polite">
-
-<svg viewBox="0 0 100 100" aria-hidden="true">
-
-<path d="M20 39 13 13 39 29M80 39 87 13 61 29"
-fill="#3b82f6" stroke="#a5dcff" stroke-width="4"
-stroke-linejoin="round"/>
-
-<path d="M27 28 39 8 50 23 62 8 74 29"
-fill="none" stroke="#f5c84c" stroke-width="6"
-stroke-linecap="round" stroke-linejoin="round"/>
-
-<circle cx="50" cy="57" r="34"
-fill="#60c7ff" stroke="#2563eb" stroke-width="4"/>
-
-<path d="M25 47Q32 35 40 47M60 47Q68 35 76 47"
-fill="none" stroke="#e0f7ff" stroke-width="7"
-stroke-linecap="round"/>
-
-<ellipse cx="38" cy="57" rx="5" ry="8" fill="#111b55"/>
-<ellipse cx="63" cy="57" rx="5" ry="8" fill="#111b55"/>
-
-<path d="M45 69Q50 75 55 69"
-fill="none" stroke="#111b55" stroke-width="3"
-stroke-linecap="round"/>
-
-<path d="M72 75h18v16H72z"
-fill="#f0a5ff" stroke="#fff" stroke-width="2"/>
-
-<path d="m81 80 4 4-4 4-4-4z" fill="#fff"/>
-
-</svg>
-
-<span>
-<strong>Pipiu ! 💌</strong>
-<small>Tu as reçu un nouveau message</small>
-</span>
-
+<div id="pipiu">
+<span class="face">🐾💙</span>
+<span><b>PIPIU ! 💌</b><br><small id="pipiuText">Bienvenue sur VYBORA</small></span>
 </div>
 
 <script>
-
-function showPipiuMessage(){
-
-  const notice=document.getElementById('pipiu-notice');
-
-  notice.classList.remove('show');
-
-  void notice.offsetWidth;
-
-  notice.classList.add('show');
-
-  clearTimeout(window.pipiuHideTimer);
-
-  window.pipiuHideTimer=setTimeout(
-    ()=>notice.classList.remove('show'),
-    4000
-  );
+function openPage(id){
+ document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+ document.getElementById(id).classList.add('active');
+ window.scrollTo(0,0);
 }
 
-window.showPipiuMessage=showPipiuMessage;
-
-document.getElementById('test-pipiu')
-.addEventListener('click',showPipiuMessage);
-
-
-// CONFIGURATION LIVEKIT
-
-const LIVEKIT_URL='wss://vybora-k1sspive.livekit.cloud';
-
-const TOKEN_SERVER='https://vybora-web.onrender.com/token';
-
-const $=id=>document.getElementById(id);
-
-let room=null;
-let capacity=9;
-let micOn=false;
-let cameraOn=false;
-
-
-function status(message){
-  $('status').textContent=message;
+function pipiu(message){
+ const box=document.getElementById('pipiu');
+ document.getElementById('pipiuText').textContent=message;
+ box.classList.add('show');
+ clearTimeout(window.pipiuTimer);
+ window.pipiuTimer=setTimeout(()=>box.classList.remove('show'),3500);
 }
 
+function publish(){
+ const field=document.getElementById('post');
+ if(!field.value.trim())return;
+ const p=document.createElement('p');
+ p.textContent='💜 '+field.value;
+ document.getElementById('feed').prepend(p);
+ field.value='';
+ pipiu('Ta publication est ajoutée !');
+}
 
 function renderSeats(){
-
-  const box=$('seats');
-
-  box.innerHTML='';
-
-  capacity=Number($('capacity').value);
-
-  for(let i=0;i<capacity;i++){
-
-    const seat=document.createElement('div');
-
-    seat.className='seat';
-
-    seat.id='seat-'+i;
-
-    seat.textContent='🪑 Siège '+(i+1);
-
-    const label=document.createElement('small');
-
-    label.textContent='Libre';
-
-    seat.appendChild(label);
-
-    box.appendChild(seat);
-  }
+ const n=Number(document.getElementById('capacity').value);
+ document.getElementById('seats').innerHTML='';
+ for(let i=0;i<n;i++){
+  const seat=document.createElement('div');
+  seat.className='seat';
+  seat.textContent='🪑 Siège '+(i+1);
+  document.getElementById('seats').appendChild(seat);
+ }
 }
 
-
-function updateParticipants(){
-
-  if(!room)return;
-
-  const people=[
-    room.localParticipant,
-    ...room.remoteParticipants.values()
-  ];
-
-  $('count').textContent=
-    people.length+' / '+capacity+' participants';
-
-  for(let i=0;i<capacity;i++){
-
-    const seat=$('seat-'+i);
-
-    if(!seat)continue;
-
-    seat.replaceChildren();
-
-    if(!people[i]){
-
-      seat.textContent='🪑 Siège '+(i+1);
-
-      const label=document.createElement('small');
-
-      label.textContent='Libre';
-
-      seat.appendChild(label);
-
-      continue;
-    }
-
-    const person=people[i];
-
-    const name=document.createElement('strong');
-
-    name.textContent=person.name||person.identity;
-
-    seat.appendChild(name);
-
-    for(const publication of person.videoTrackPublications.values()){
-
-      if(publication.track){
-
-        const element=publication.track.attach();
-
-        element.autoplay=true;
-
-        element.playsInline=true;
-
-        seat.appendChild(element);
-      }
-    }
-
-    const label=document.createElement('small');
-
-    label.textContent=i===0?'Toi':'Participant';
-
-    seat.appendChild(label);
-  }
+function joinPreview(){
+ const p=document.getElementById('pseudo').value.trim();
+ const r=document.getElementById('room').value.trim();
+ if(!p||!r){pipiu('Entre ton pseudo et le nom du salon.');return;}
+ document.getElementById('liveStatus').textContent='Aperçu du salon '+r+' pour '+p;
+ pipiu('Bienvenue dans le LIVE !');
 }
 
+const categories=[
+'Coeurs','Animaux','Prestige','Fête','Nature',
+'Voyage','Gourmandises','Musique','Magie','Spéciaux'
+];
 
-async function joinRoom(){
+const emojis=[
+['💗','🌹','⭐','💋','🧸','🍫','🎈','🌷','💐','🦋'],
+['🐼','🐱','🐶','🐰','🦊','🐻','🦁','🐬','🦄','🐉'],
+['👑','💎','🏆','🚘','🛥️','🏰','✈️','🌙','☀️','🌈'],
+['🎂','🎁','🎉','🎆','🎤','🎸','🎧','🥂','🪩','🎭'],
+['🌻','🌺','🌴','🌊','🔥','❄️','🌟','🌌','🌳','🍀'],
+['🏝️','🚀','🚁','🚲','🏎️','🚢','🗼','🌍','🛸','🧭'],
+['🍓','🍒','🍉','🍩','🍰','🍭','🍯','🧁','🍦','☕'],
+['🎹','🥁','🎺','🎻','🎷','🎼','🎵','🎶','🎙️','🎚️'],
+['🪄','🔮','🧚','🧞','🧿','🪽','🦚','🪐','🌠','🧙'],
+['🎟️','💝','🎲','🎰','🧰','🪙','💜','💙','👸','🐲']
+];
 
-  const username=$('username').value.trim();
+const names=[
+['Cœur','Rose','Étoile','Bisou','Peluche','Chocolat','Ballon','Tulipe','Bouquet','Papillon'],
+['Panda','Chat','Chien','Lapin','Renard','Ours','Lion','Dauphin','Licorne','Dragon'],
+['Couronne','Diamant','Trophée','Voiture','Yacht','Château','Jet privé','Lune','Soleil','Arc-en-ciel'],
+['Gâteau','Cadeau','Confettis','Feu d’artifice','Micro','Guitare','Casque','Toast','Disco','Masque'],
+['Tournesol','Hibiscus','Palmier','Vague','Flamme','Flocon','Comète','Galaxie','Arbre','Trèfle'],
+['Île','Fusée','Hélicoptère','Vélo','Bolide','Bateau','Tour','Planète','OVNI','Boussole'],
+['Fraise','Cerises','Pastèque','Donut','Gâteau','Sucette','Miel','Cupcake','Glace','Café'],
+['Piano','Batterie','Trompette','Violon','Saxophone','Partition','Note','Mélodie','Studio','Mixage'],
+['Magie','Cristal','Fée','Génie','Protection','Ailes','Paon','Saturne','Étoile filante','Mage'],
+['Ticket VIP','Surprise','Mystère','Jackpot','Coffre','Pièces','VYBORA','PIPIU','Reine','Dragon royal']
+];
 
-  const roomName=$('roomName').value.trim();
+let balance=1250;
+let queens=0;
+let activeCategory=0;
+let history=[];
 
-  if(!username||!roomName){
-
-    status('Entre ton pseudo et le nom du salon.');
-
-    return;
-  }
-
-  $('join').disabled=true;
-
-  status('Connexion en cours…');
-
-  try{
-
-    const response=await fetch(TOKEN_SERVER,{
-
-      method:'POST',
-
-      headers:{
-        'Content-Type':'application/json'
-      },
-
-      body:JSON.stringify({
-        room:roomName,
-        username:username
-      })
-
-    });
-
-    if(!response.ok){
-
-      throw new Error(
-        'Erreur du serveur de jetons ('+response.status+')'
-      );
-    }
-
-    const data=await response.json();
-
-    if(!data.token){
-
-      throw new Error(
-        'Jeton manquant dans la réponse du serveur'
-      );
-    }
-
-    const {Room,RoomEvent}=await import(
-      'https://esm.sh/livekit-client'
-    );
-
-    room=new Room();
-
-    room.on(RoomEvent.TrackSubscribed,updateParticipants);
-
-    room.on(RoomEvent.TrackUnsubscribed,updateParticipants);
-
-    room.on(RoomEvent.ParticipantConnected,updateParticipants);
-
-    room.on(RoomEvent.ParticipantDisconnected,updateParticipants);
-
-    room.on(RoomEvent.LocalTrackPublished,updateParticipants);
-
-    room.on(RoomEvent.LocalTrackUnpublished,updateParticipants);
-
-    await room.connect(LIVEKIT_URL,data.token);
-
-    $('leave').disabled=false;
-
-    $('audio').disabled=false;
-
-    $('video').disabled=false;
-
-    renderSeats();
-
-    updateParticipants();
-
-    status('Tu es connecté au salon '+roomName+' 💜');
-
-  }catch(error){
-
-    console.error(error);
-
-    status('Connexion impossible : '+error.message);
-
-    $('join').disabled=false;
-
-    if(room){
-
-      try{
-        await room.disconnect();
-      }catch(e){}
-
-      room=null;
-    }
-  }
+function renderGifts(){
+ const cat=document.getElementById('categories');
+ cat.innerHTML='';
+ categories.forEach((c,i)=>{
+  const b=document.createElement('button');
+  b.textContent=c;
+  b.onclick=()=>{activeCategory=i;renderGrid();};
+  cat.appendChild(b);
+ });
+ renderGrid();
 }
 
-
-async function leaveRoom(){
-
-  if(room){
-    await room.disconnect();
-  }
-
-  room=null;
-
-  micOn=false;
-
-  cameraOn=false;
-
-  $('join').disabled=false;
-
-  $('leave').disabled=true;
-
-  $('audio').disabled=true;
-
-  $('video').disabled=true;
-
-  $('audio').textContent='🎙️ Activer le micro';
-
-  $('video').textContent='📷 Activer la caméra';
-
-  $('count').textContent='0 participant';
-
-  renderSeats();
-
-  status('Tu as quitté le LIVE.');
+function renderGrid(){
+ const grid=document.getElementById('giftGrid');
+ grid.innerHTML='';
+ for(let i=0;i<10;i++){
+  const price=(i+1)*10+(activeCategory*10);
+  const card=document.createElement('div');
+  card.className='gift';
+  card.innerHTML='<div class="emoji">'+emojis[activeCategory][i]+'</div><b>'+names[activeCategory][i]+'</b><p>🪙 '+price+' points</p>';
+  const button=document.createElement('button');
+  button.textContent='Envoyer';
+  button.onclick=()=>sendGift(names[activeCategory][i],price);
+  card.appendChild(button);
+  grid.appendChild(card);
+ }
 }
 
+function sendGift(name,price){
+ if(balance<price){pipiu('Pas assez de points !');return;}
+ balance-=price;
+ history.unshift('Cadeau '+name+' : -'+price+' points');
+ updateWallet();
+ pipiu('Tu as envoyé '+name+' !');
+}
 
-$('join').addEventListener('click',joinRoom);
+function updateWallet(){
+ document.getElementById('points').textContent=balance;
+ document.getElementById('giftBalance').textContent=balance;
+ document.getElementById('queens').textContent=queens;
+ document.getElementById('history').textContent=history.join(' · ')||'Aucune transaction.';
+}
 
-$('leave').addEventListener('click',leaveRoom);
+function sendMessage(){
+ const recipient=document.getElementById('recipient').value.trim();
+ const message=document.getElementById('message').value.trim();
+ if(!recipient||!message){pipiu('Complète le destinataire et le message.');return;}
+ const p=document.createElement('p');
+ p.textContent='À '+recipient+' : '+message;
+ document.getElementById('messageList').prepend(p);
+ document.getElementById('message').value='';
+ pipiu('Message ajouté à la démonstration !');
+}
 
-$('capacity').addEventListener('change',()=>{
-
-  if(!room){
-    renderSeats();
-  }
-
-});
-
-
-$('audio').addEventListener('click',async()=>{
-
-  try{
-
-    micOn=!micOn;
-
-    await room.localParticipant.setMicrophoneEnabled(micOn);
-
-    $('audio').textContent=micOn
-      ?'🔇 Couper le micro'
-      :'🎙️ Activer le micro';
-
-  }catch(error){
-
-    micOn=false;
-
-    status('Impossible d’activer le micro.');
-  }
-
-});
-
-
-$('video').addEventListener('click',async()=>{
-
-  try{
-
-    cameraOn=!cameraOn;
-
-    await room.localParticipant.setCameraEnabled(cameraOn);
-
-    $('video').textContent=cameraOn
-      ?'📷 Couper la caméra'
-      :'📷 Activer la caméra';
-
-    updateParticipants();
-
-  }catch(error){
-
-    cameraOn=false;
-
-    status('Impossible d’activer la caméra.');
-  }
-
-});
-
+function ranking(period){
+ document.getElementById('rankingText').textContent='Classement '+period+' : à connecter au serveur.';
+}
 
 renderSeats();
-
+renderGifts();
+updateWallet();
 </script>
-
 </body>
 </html>
+
