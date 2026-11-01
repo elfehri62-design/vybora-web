@@ -1,0 +1,246 @@
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>VYBORA - Ludo</title>
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;padding:18px;
+ background:linear-gradient(145deg,#160b35,#32106a,#101c49);
+ color:white;font-family:Arial,sans-serif;text-align:center;
+}
+h1{color:#d8a6ff;text-shadow:0 0 15px #a34cff}
+.panel{
+ max-width:600px;margin:15px auto;padding:16px;
+ background:#ffffff12;border:1px solid #a76bff66;
+ border-radius:20px;
+}
+button,select{
+ padding:12px 18px;border:0;border-radius:12px;
+ font-weight:bold;font-size:16px;margin:5px;
+}
+button{background:#a855f7;color:white;cursor:pointer}
+button:disabled{opacity:.4}
+#board{
+ display:grid;grid-template-columns:repeat(5,1fr);
+ gap:7px;max-width:420px;margin:18px auto;
+}
+.cell{
+ aspect-ratio:1;border-radius:12px;
+ background:#ffffff18;border:1px solid #ffffff25;
+ display:flex;align-items:center;justify-content:center;
+ font-size:23px;position:relative;
+}
+.cell.start{background:#ffffff35}
+.cell.safe{border:2px solid #ffe28a}
+.cell.goal{background:#facc1530}
+#players{
+ display:grid;grid-template-columns:repeat(2,1fr);gap:8px;
+}
+.player{
+ padding:10px;border-radius:12px;background:#ffffff15;
+}
+.active{outline:3px solid #ffe28a}
+.pieces{font-size:22px;letter-spacing:4px}
+#dice{font-size:55px;margin:10px}
+#message{min-height:48px;color:#ffe5a8;font-weight:bold}
+.small{font-size:12px;opacity:.8}
+</style>
+</head>
+<body>
+
+<h1>🦖 VYBORA LUDO</h1>
+<p>Joue avec tes amis ! 💜</p>
+
+<div class="panel">
+ <label>Nombre de joueurs :</label><br>
+ <select id="playerCount">
+  <option value="2">2 joueurs</option>
+  <option value="3">3 joueurs</option>
+  <option value="4" selected>4 joueurs</option>
+ </select>
+ <button onclick="newGame()">Nouvelle partie</button>
+</div>
+
+<div class="panel">
+ <div id="players"></div>
+ <div id="dice">🎲</div>
+ <button id="roll" onclick="rollDice()">Lancer le dé</button>
+ <div id="message">Lance le dé pour commencer !</div>
+ <div id="board"></div>
+ <p class="small">Mini-Ludo VYBORA : course de pions, sorties au 6 et captures.</p>
+</div>
+
+<script>
+const colors=["🔴","🔵","🟢","🟡"];
+const names=["Rouge","Bleu","Vert","Jaune"];
+const trackLength=40;
+let players=[];
+let current=0;
+let dice=0;
+let waiting=false;
+let finished=false;
+
+function newGame(){
+ const count=Number(document.getElementById("playerCount").value);
+ players=Array.from({length:count},(_,i)=>({
+  name:names[i],
+  color:colors[i],
+  pieces:[-1,-1,-1,-1],
+  wins:0
+ }));
+ current=0;
+ dice=0;
+ waiting=false;
+ finished=false;
+ document.getElementById("dice").textContent="🎲";
+ document.getElementById("message").textContent=
+  "Nouvelle partie ! Au tour du joueur Rouge.";
+ draw();
+}
+
+function draw(){
+ const playersBox=document.getElementById("players");
+ playersBox.innerHTML="";
+ players.forEach((p,i)=>{
+  const div=document.createElement("div");
+  div.className="player"+(i===current&&!finished?" active":"");
+  div.innerHTML=`${p.color} ${p.name}<br>
+  <span class="pieces">${p.pieces.map(x=>x===-1?"🏠":x>=trackLength?"🏆":"●").join(" ")}</span>
+  <br><small>${p.pieces.filter(x=>x>=trackLength).length}/4 arrivés</small>`;
+  playersBox.appendChild(div);
+ });
+
+ const board=document.getElementById("board");
+ board.innerHTML="";
+ for(let i=0;i<trackLength;i++){
+  const cell=document.createElement("div");
+  cell.className="cell";
+  if(i%10===0)cell.classList.add("start");
+  if(i%5===0)cell.classList.add("safe");
+  const occupants=[];
+  players.forEach((p,pi)=>{
+   p.pieces.forEach((pos,ti)=>{
+    if(pos>=0&&pos<trackLength&&
+       (pos+pi*10)%trackLength===i){
+     occupants.push(p.color);
+    }
+   });
+  });
+  cell.textContent=occupants.length?occupants.join(""):"·";
+  cell.title="Case "+(i+1);
+  board.appendChild(cell);
+ }
+
+ document.getElementById("roll").disabled=waiting||finished;
+}
+
+function rollDice(){
+ if(waiting||finished)return;
+ dice=Math.floor(Math.random()*6)+1;
+ document.getElementById("dice").textContent=
+  ["⚀","⚁","⚂","⚃","⚄","⚅"][dice-1];
+
+ const p=players[current];
+ const movable=p.pieces.some(pos=>
+  (pos===-1&&dice===6)||(pos>=0&&pos<trackLength)
+ );
+
+ if(!movable){
+  document.getElementById("message").textContent=
+   `${p.name} a fait ${dice}. Aucun pion ne peut avancer.`;
+  setTimeout(nextTurn,1100);
+  return;
+ }
+
+ waiting=true;
+ document.getElementById("message").textContent=
+  `${p.name} : choisis un pion à déplacer.`;
+ draw();
+ showPieces();
+}
+
+function showPieces(){
+ const p=players[current];
+ const box=document.getElementById("players");
+ const div=box.children[current];
+ const buttons=p.pieces.map((pos,i)=>{
+  const canMove=(pos===-1&&dice===6)||(pos>=0&&pos<trackLength);
+  return `<button ${canMove?"":"disabled"}
+   onclick="movePiece(${i})">Pion ${i+1}</button>`;
+ }).join("");
+ div.innerHTML+=`<div>${buttons}</div>`;
+}
+
+function movePiece(index){
+ if(!waiting||finished)return;
+ const p=players[current];
+ let pos=p.pieces[index];
+
+ if(pos===-1){
+  if(dice!==6)return;
+  pos=0;
+ }else{
+  pos+=dice;
+ }
+
+ if(pos>trackLength){
+  document.getElementById("message").textContent=
+   "Il faut obtenir le nombre exact pour arriver !";
+  return;
+ }
+
+ p.pieces[index]=pos;
+
+ if(pos<trackLength){
+  const globalPos=(pos+current*10)%trackLength;
+  players.forEach((other,pi)=>{
+   if(pi===current)return;
+   other.pieces=other.pieces.map(enemyPos=>{
+    if(enemyPos>=0&&enemyPos<trackLength&&
+       (enemyPos+pi*10)%trackLength===globalPos&&
+       globalPos%5!==0){
+     document.getElementById("message").textContent=
+      `${p.name capture un pion ${other.name} !`;
+     return -1;
+    }
+    return enemyPos;
+   });
+  });
+ }
+
+ if(p.pieces.every(x=>x>=trackLength)){
+  finished=true;
+  document.getElementById("message").textContent=
+   `🏆 ${p.name} gagne la partie ! Bravo !`;
+  draw();
+  return;
+ }
+
+ waiting=false;
+ draw();
+
+ if(dice===6){
+  document.getElementById("message").textContent=
+   `${p.name} a fait 6 : rejoue !`;
+ }else{
+  nextTurn();
+ }
+}
+
+function nextTurn(){
+ if(finished)return;
+ waiting=false;
+ current=(current+1)%players.length;
+ document.getElementById("message").textContent=
+  `Au tour de ${players[current].name} !`;
+ draw();
+}
+
+newGame();
+</script>
+</body>
+</html>
